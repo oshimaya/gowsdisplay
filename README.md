@@ -6,21 +6,21 @@ NetBSD wsdisplay(4) wrapper for Golang.
 
 ## Basic use
 
-- Open device
+### Open device
 
 
 ```go
-	wsd := NewWsDisplay("/dev/ttyE1")
+	wsd := gowsdisplay.NewWsDisplay("/dev/ttyE1")
 	wsd.Open()
 ```
 
-- Init and set to framebuffer mode 
+### Init and set to framebuffer mode 
 
 ```go
 	wsd.InitGraphics()
 ```
 
-- Check info fb's depth, size, type, and so on.
+### Check info fb's depth, size, type, and so on.
 
 ```go
 	...
@@ -32,12 +32,20 @@ NetBSD wsdisplay(4) wrapper for Golang.
 	...
 ```
 
-- Data type
+### Data type
 
 Currently, only RGBtype is supported.
 
-- Access to framebuffer memory
+### Access to framebuffer memory
 
+  T.B.D.
+
+
+### Terminate  
+
+```
+	wsd.Close()
+```
 
 ## Examples
 
