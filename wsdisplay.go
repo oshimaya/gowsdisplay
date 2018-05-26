@@ -30,6 +30,7 @@ package gowsdisplay
 
 import (
 	"errors"
+	"math"
 	"syscall"
 	"unsafe"
 )
@@ -169,6 +170,39 @@ func (wsd *WsDisplay) GetRGBmask() RGBmask {
 
 func (wsd *WsDisplay) GetBufferAddr() *byte {
 	return &wsd.addr[0]
+}
+
+// Get frame buffer pointer as original []byte slice
+func (wsd *WsDisplay) GetBuffer() []byte {
+	return wsd.addr
+}
+
+// Get frame buffer pointer as []PIXEL32 slice
+func (wsd *WsDisplay) GetBufferAsPixel32() (q []PIXEL32) {
+	p := unsafe.Pointer(&wsd.addr[0])
+	q = (*(*[math.MaxInt32 / 4]PIXEL32)(p))[:len(wsd.addr)/4]
+	return
+}
+
+// Get frame buffer pointer as []PIXEL24 slice
+func (wsd *WsDisplay) GetBufferAsPixel24() (q []PIXEL24) {
+	p := unsafe.Pointer(&wsd.addr[0])
+	q = (*(*[math.MaxInt32 / 3]PIXEL24)(p))[:len(wsd.addr)/3]
+	return
+}
+
+// Get frame buffer pointer as []PIXEL16 slice
+func (wsd *WsDisplay) GetBufferAsPixel16() (q []PIXEL16) {
+	p := unsafe.Pointer(&wsd.addr[0])
+	q = (*(*[math.MaxInt32 / 2]PIXEL16)(p))[:len(wsd.addr)/2]
+	return
+}
+
+// Get frame buffer pointer as []PIXEL8 slice
+func (wsd *WsDisplay) GetBufferAsPixel8() (q []PIXEL8) {
+	p := unsafe.Pointer(&wsd.addr[0])
+	q = (*(*[math.MaxInt32]PIXEL8)(p))[:len(wsd.addr)]
+	return
 }
 
 func (wsd *WsDisplay) getFBinfo() error {
