@@ -8,17 +8,18 @@ NetBSD wsdisplay(4) wrapper for Golang.
 
 ### Open device
 
-
 ```go
-	wsd := gowsdisplay.NewWsDisplay("/dev/ttyE1")
+	wsd := gowsdisplay.NewWsDisplay("/dev/ttyE?")
 	wsd.Open()
 ```
+Note: Requires RW access permission to /dev/ttyE?
 
 ### Init and set to framebuffer mode 
 
 ```go
 	wsd.InitGraphics()
 ```
+Note: This changes ttyE? to framebuffer mode, it's better to operation from network remotely.
 
 ### Check info fb's depth, size, type, and so on.
 
@@ -32,20 +33,46 @@ NetBSD wsdisplay(4) wrapper for Golang.
 	...
 ```
 
-### Data type
+Maybe some accessor function will be added in the future...
 
-Currently, only RGBtype is supported.
+### Data type
+- 1pixel format
+ - PIXEL32  
+1pixel = 32bit, [4]uint8. Typically RGBA8:8:8:8, but the order or bit format is not specified this.
+ - PIXEL24  
+1pixel = 24bit, [3]uint8. Typically RGB8:8:8, but the order or bit format is not specified this.
+ - PIXEL16  
+1pixel = 16bit, [2]uint8. Typically RGB5:6/5:5 or YUV422, but the order or bit format is not specified this.
+ - PIXEL8  
+1pixel = 8bit, [1]uint8. Typically Gray or Indexed color.
+
+- Apply the mask and order to Color value  
+T.B.D.
 
 ### Access to framebuffer memory
 
-  T.B.D.
+Minimum:
 
+```go
+	pix := ws.GetBufferAsPixel32()	// Get framebuffer data as []PIXEL32 slice
+
+	var rawdata PIXEL32
+	...
+	// prepar 1 pixel raw data
+	rawdata[0] = ...
+	rawdata[1] = ...
+	rawdata[2] = ...
+	rawdata[3] = ...
+	// Write 1 pixel
+	pix[index] = rawdata
+```
 
 ### Terminate  
 
-```
+```go
 	wsd.Close()
 ```
+Typically, call this in defer.
 
 ## Examples
 
