@@ -36,17 +36,19 @@ Note: This changes ttyE? to framebuffer mode, it's better to operation from netw
 Maybe some accessor function will be added in the future...
 
 ### Data type
-- 1pixel format
- - PIXEL32  
+1pixel format:
+
+- PIXEL32  
 1pixel = 32bit, [4]uint8. Typically RGBA8:8:8:8, but the order or bit format is not specified this.
- - PIXEL24  
+- PIXEL24  
 1pixel = 24bit, [3]uint8. Typically RGB8:8:8, but the order or bit format is not specified this.
- - PIXEL16  
+- PIXEL16  
 1pixel = 16bit, [2]uint8. Typically RGB5:6/5:5 or YUV422, but the order or bit format is not specified this.
- - PIXEL8  
+- PIXEL8  
 1pixel = 8bit, [1]uint8. Typically Gray or Indexed color.
 
-- Apply the mask and order to Color value  
+Apply the mask and order to Color value  
+
 T.B.D.
 
 ### Access to framebuffer memory
