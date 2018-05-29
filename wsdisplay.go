@@ -120,15 +120,15 @@ type RGBmask struct {
 // struct wsdisplay_fbinfo
 // XXX: how to define for non RGB type?
 type FBinfo struct {
-	Size         uint64  // fb size in bytes
-	Offset       uint64  // start of visible fb in bytes
-	Width        uint32  // screen width in pixels
-	Height       uint32  // screen height in lines
-	Stride       uint32  // stride, bytes of one line
-	Bitsperpixel uint32  // size of one pixel in bits
-	Pixeltype    uint32  // pixel type  (RGB/CI/GRAY..)
-	Rgbmask      RGBmask // RGB masks for RGB type
-	Flags        uint32  // flags
+	size         uint64  // fb size in bytes
+	offset       uint64  // start of visible fb in bytes
+	width        uint32  // screen width in pixels
+	height       uint32  // screen height in lines
+	stride       uint32  // stride, bytes of one line
+	bitsperpixel uint32  // size of one pixel in bits
+	pixeltype    uint32  // pixel type  (RGB/CI/GRAY..)
+	rgbmask      RGBmask // RGB masks for RGB type
+	flags        uint32  // flags
 }
 
 // Create New Display
@@ -165,7 +165,7 @@ func (wsd *WsDisplay) GetFBinfo() FBinfo {
 }
 
 func (wsd *WsDisplay) GetRGBmask() RGBmask {
-	return wsd.info.Rgbmask
+	return wsd.info.rgbmask
 }
 
 func (wsd *WsDisplay) GetBufferAddr() *byte {
@@ -215,8 +215,8 @@ func (wsd *WsDisplay) getFBinfo() error {
 }
 
 func (wsd *WsDisplay) mapFB() (err error) {
-	if wsd.info.Size > 0 {
-		len := int(wsd.info.Size)
+	if wsd.info.size > 0 {
+		len := int(wsd.info.size)
 		wsd.addr, err = syscall.Mmap(wsd.fd, 0, len,
 			syscall.PROT_READ|syscall.PROT_WRITE, 0)
 		return err
