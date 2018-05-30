@@ -35,7 +35,7 @@ import (
 // 32bit per pixel, ex RGBA(8:8:8:8)
 type PIXEL32 [4]uint8
 
-func NewRGB32(c color.COLOR mask RGBmask) (p PIXEL32) {
+func NewRGB32(c color.Color, mask RGBmask) (p PIXEL32) {
 	p.RGBA(c, mask)
 	return
 }
