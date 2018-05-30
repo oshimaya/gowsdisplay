@@ -35,16 +35,21 @@ import (
 // 32bit per pixel, ex RGBA(8:8:8:8)
 type PIXEL32 [4]uint8
 
-func NewRGB32(c color.RGBA, mask RGBmask) (p PIXEL32) {
+func NewRGB32(c color.COLOR mask RGBmask) (p PIXEL32) {
 	p.RGBA(c, mask)
 	return
 }
 
 // Set 32bit-color data
-func (p *PIXEL32) RGBA(c color.RGBA, mask RGBmask) {
-	d := (uint32(c.R)<<mask.Red_size-1)/255<<mask.Red_offset |
-		(uint32(c.G)<<mask.Green_size-1)/255<<mask.Green_offset |
-		(uint32(c.B)<<mask.Blue_size-1)/255<<mask.Blue_offset
+func (p *PIXEL32) RGBA(c color.Color, mask RGBmask) {
+	r,g,b,a := c.RGBA()
+	r >>= 8
+	g >>= 8
+	b >>= 8
+	a >>= 8
+	d := (r<<mask.Red_size-1)/255<<mask.Red_offset |
+		(g<<mask.Green_size-1)/255<<mask.Green_offset |
+		(b<<mask.Blue_size-1)/255<<mask.Blue_offset
 		//
 		// Probably alpha bit is not used by any fb driver now because
 	// alpha_offset and alpha_size is always 0 in wsdisplayio_get_fbinfo()
@@ -52,7 +57,7 @@ func (p *PIXEL32) RGBA(c color.RGBA, mask RGBmask) {
 	// Howerver check it heare for sure.
 	//
 	if mask.Alpha_size > 0 {
-		d |= (uint32(c.A)<<mask.Alpha_size - 1) / 255 << mask.Alpha_offset
+		d |= (a<<mask.Alpha_size - 1) / 255 << mask.Alpha_offset
 	}
 	for i := range p {
 		p[i] = (*PIXEL32)(unsafe.Pointer(&d))[i]
@@ -62,17 +67,22 @@ func (p *PIXEL32) RGBA(c color.RGBA, mask RGBmask) {
 // 24bit per pixel, ex RGB(8:8:8)
 type PIXEL24 [3]uint8
 
-func NewRGB24(c color.RGBA, mask RGBmask) (p PIXEL24) {
+func NewRGB24(c color.Color, mask RGBmask) (p PIXEL24) {
 	p.RGBA(c, mask)
 	return
 }
 //
 // Set 24bit-color data
 //
-func (p *PIXEL24) RGBA(c color.RGBA, mask RGBmask) {
-	d := (uint32(c.R)<<mask.Red_size-1)/255<<mask.Red_offset |
-		(uint32(c.G)<<mask.Green_size-1)/255<<mask.Green_offset |
-		(uint32(c.B)<<mask.Blue_size-1)/255<<mask.Blue_offset
+func (p *PIXEL24) RGBA(c color.Color, mask RGBmask) {
+	r,g,b,a := c.RGBA()
+	r >>= 8
+	g >>= 8
+	b >>= 8
+	a >>= 8
+	d := (r<<mask.Red_size-1)/255<<mask.Red_offset |
+		(g<<mask.Green_size-1)/255<<mask.Green_offset |
+		(b<<mask.Blue_size-1)/255<<mask.Blue_offset
 	//
 	// all-mask for checking the valid byte
 	//
@@ -81,7 +91,7 @@ func (p *PIXEL24) RGBA(c color.RGBA, mask RGBmask) {
 		(1<<mask.Blue_size-1)<<mask.Blue_offset
 		// maybe alpha bit is nothing but check it for safe
 	if mask.Alpha_size > 0 {
-		d |= uint32((c.A<<mask.Alpha_size-1)/255) << mask.Alpha_offset
+		d |= (a<<mask.Alpha_size-1)/255 << mask.Alpha_offset
 		m |= (1<<mask.Alpha_size - 1) << mask.Alpha_offset
 	}
 	mp := (*PIXEL24)(unsafe.Pointer(&m))
@@ -98,7 +108,7 @@ func (p *PIXEL24) RGBA(c color.RGBA, mask RGBmask) {
 // 16bit per pixel, ex RGB(5:6:6) or YUV(4:2:2)
 type PIXEL16 [2]uint8
 
-func NewRGB16(c color.RGBA, mask RGBmask) (p PIXEL16) {
+func NewRGB16(c color.Color, mask RGBmask) (p PIXEL16) {
 	p.RGBA(c, mask)
 	return
 }
@@ -106,12 +116,17 @@ func NewRGB16(c color.RGBA, mask RGBmask) (p PIXEL16) {
 //
 // Set 16bit color Data, ex RGB=565, RGBA=5551
 //
-func (p *PIXEL16) RGBA(c color.RGBA, mask RGBmask) {
-	d := (uint16(c.R)<<mask.Red_size-1)/255<<mask.Red_offset |
-		(uint16(c.G)<<mask.Green_size-1)/255<<mask.Green_offset |
-		(uint16(c.B)<<mask.Blue_size-1)/255<<mask.Blue_offset
+func (p *PIXEL16) RGBA(c color.Color, mask RGBmask) {
+	r,g,b,a := c.RGBA()
+	r >>= 8
+	g >>= 8
+	b >>= 8
+	a >>= 8
+	d := (r<<mask.Red_size-1)/255<<mask.Red_offset |
+		(g<<mask.Green_size-1)/255<<mask.Green_offset |
+		(b<<mask.Blue_size-1)/255<<mask.Blue_offset
 	if mask.Alpha_size > 0 {
-		d |= uint16((c.A<<mask.Alpha_size-1)/255) << mask.Alpha_offset
+		d |= (a<<mask.Alpha_size-1)/255 << mask.Alpha_offset
 	}
 	//
 	// convert to int8 data in PIXEL
