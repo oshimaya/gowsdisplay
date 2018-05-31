@@ -158,6 +158,8 @@ func (p *PIXEL8) SetColor(c color.Color, mask RGBmask) {
 
 type PIXELARRAY interface {
 	StoreImage(src image.Image, mask RGBmask)
+	GetWidth() int
+	GetHeight() int
 }
 
 type PIXEL32ARRAY struct {
@@ -199,6 +201,14 @@ func (p *PIXEL32ARRAY) StoreImage (img image.Image, mask RGBmask) {
 	}
 }
 
+func (p *PIXEL32ARRAY) GetWidth() int {
+	return p.Width
+}
+
+func (p *PIXEL32ARRAY) GetHeight() int {
+	return p.Height
+}
+
 func (p *PIXEL24ARRAY) StoreImage (img image.Image, mask RGBmask) {
 
 	w:=img.Bounds().Max.X-img.Bounds().Min.X
@@ -213,6 +223,15 @@ func (p *PIXEL24ARRAY) StoreImage (img image.Image, mask RGBmask) {
 		}
 	}
 }
+
+func (p *PIXEL24ARRAY) GetWidth() int {
+	return p.Width
+}
+
+func (p *PIXEL24ARRAY) GetHeight() int {
+	return p.Height
+}
+
 func (p *PIXEL16ARRAY) StoreImage (img image.Image, mask RGBmask) {
 
 	w:=img.Bounds().Max.X-img.Bounds().Min.X
@@ -228,6 +247,14 @@ func (p *PIXEL16ARRAY) StoreImage (img image.Image, mask RGBmask) {
 	}
 }
 
+func (p *PIXEL16ARRAY) GetWidth() int {
+	return p.Width
+}
+
+func (p *PIXEL16ARRAY) GetHeight() int {
+	return p.Height
+}
+
 func (p *PIXEL8ARRAY) StoreImage (img image.Image, mask RGBmask) {
 
 	w:=img.Bounds().Max.X-img.Bounds().Min.X
@@ -241,4 +268,11 @@ func (p *PIXEL8ARRAY) StoreImage (img image.Image, mask RGBmask) {
 			p.Pix[x+y*w].SetColor(img.At(x,y), mask)
 		}
 	}
+}
+func (p *PIXEL8ARRAY) GetWidth() int {
+	return p.Width
+}
+
+func (p *PIXEL8ARRAY) GetHeight() int {
+	return p.Height
 }
