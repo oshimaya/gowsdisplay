@@ -28,9 +28,17 @@
 package gowsdisplay
 
 import (
+	"image"
 	"image/color"
 	"unsafe"
 )
+
+// Interface depth independent
+
+type PIXEL interface {
+	RGBA(c color.Color, mask RGBmask)
+}
+
 
 // 32bit per pixel, ex RGBA(8:8:8:8)
 type PIXEL32 [4]uint8
@@ -138,3 +146,99 @@ func (p *PIXEL16) RGBA(c color.Color, mask RGBmask) {
 
 // 8bit per pixel, ex Gray8 or Color Indexed
 type PIXEL8 [1]uint8
+
+func (p *PIXEL8) RGBA(c color.Color, mask RGBmask) {
+	r,g,b,a := c.RGBA()
+	r >>= 8
+	g >>= 8
+	b >>= 8
+	a >>= 8
+	p[0] = uint8((r * 299 + g* 587 + b*114)/1000)
+}
+
+type PIXELARRAY interface {
+	StoreImage(src image.Image, mask RGBmask)
+}
+
+type PIXEL32ARRAY struct {
+	Width int
+	Height int
+	Pix []PIXEL32
+}
+
+type PIXEL24ARRAY struct {
+	Width int
+	Height int
+	Pix []PIXEL24
+}
+
+type PIXEL16ARRAY struct {
+	Width int
+	Height int
+	Pix []PIXEL16
+}
+
+type PIXEL8ARRAY struct {
+	Width int
+	Height int
+	Pix []PIXEL8
+}
+
+func (p *PIXEL32ARRAY) StoreImage (img image.Image, mask RGBmask) {
+
+	w:=img.Bounds().Max.X-img.Bounds().Min.X
+	h:=img.Bounds().Max.Y-img.Bounds().Min.Y
+
+	p.Width = w
+	p.Height = h
+	p.Pix = make([]PIXEL32, w*h)
+	for y:=img.Bounds().Min.Y; y<img.Bounds().Max.Y; y++ {
+		for x:=img.Bounds().Min.X; x<img.Bounds().Max.X; x++ {
+			p.Pix[x+y*w].RGBA(img.At(x,y), mask)
+		}
+	}
+}
+
+func (p *PIXEL24ARRAY) StoreImage (img image.Image, mask RGBmask) {
+
+	w:=img.Bounds().Max.X-img.Bounds().Min.X
+	h:=img.Bounds().Max.Y-img.Bounds().Min.Y
+
+	p.Width = w
+	p.Height = h
+	p.Pix = make([]PIXEL24, w*h)
+	for y:=img.Bounds().Min.Y; y<img.Bounds().Max.Y; y++ {
+		for x:=img.Bounds().Min.X; x<img.Bounds().Max.X; x++ {
+			p.Pix[x+y*w].RGBA(img.At(x,y), mask)
+		}
+	}
+}
+func (p *PIXEL16ARRAY) StoreImage (img image.Image, mask RGBmask) {
+
+	w:=img.Bounds().Max.X-img.Bounds().Min.X
+	h:=img.Bounds().Max.Y-img.Bounds().Min.Y
+
+	p.Width = w
+	p.Height = h
+	p.Pix = make([]PIXEL16, w*h)
+	for y:=img.Bounds().Min.Y; y<img.Bounds().Max.Y; y++ {
+		for x:=img.Bounds().Min.X; x<img.Bounds().Max.X; x++ {
+			p.Pix[x+y*w].RGBA(img.At(x,y), mask)
+		}
+	}
+}
+
+func (p *PIXEL8ARRAY) StoreImage (img image.Image, mask RGBmask) {
+
+	w:=img.Bounds().Max.X-img.Bounds().Min.X
+	h:=img.Bounds().Max.Y-img.Bounds().Min.Y
+
+	p.Width = w
+	p.Height = h
+	p.Pix = make([]PIXEL8, w*h)
+	for y:=img.Bounds().Min.Y; y<img.Bounds().Max.Y; y++ {
+		for x:=img.Bounds().Min.X; x<img.Bounds().Max.X; x++ {
+			p.Pix[x+y*w].RGBA(img.At(x,y), mask)
+		}
+	}
+}
