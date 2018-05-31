@@ -36,7 +36,7 @@ import (
 // Interface depth independent
 
 type PIXEL interface {
-	RGBA(c color.Color, mask RGBmask)
+	SetColor(c color.Color, mask RGBmask)
 }
 
 
@@ -44,12 +44,12 @@ type PIXEL interface {
 type PIXEL32 [4]uint8
 
 func NewRGB32(c color.Color, mask RGBmask) (p PIXEL32) {
-	p.RGBA(c, mask)
+	p.SetColor(c, mask)
 	return
 }
 
 // Set 32bit-color data
-func (p *PIXEL32) RGBA(c color.Color, mask RGBmask) {
+func (p *PIXEL32) SetColor(c color.Color, mask RGBmask) {
 	r,g,b,a := c.RGBA()
 	r >>= 8
 	g >>= 8
@@ -76,13 +76,13 @@ func (p *PIXEL32) RGBA(c color.Color, mask RGBmask) {
 type PIXEL24 [3]uint8
 
 func NewRGB24(c color.Color, mask RGBmask) (p PIXEL24) {
-	p.RGBA(c, mask)
+	p.SetColor(c, mask)
 	return
 }
 //
 // Set 24bit-color data
 //
-func (p *PIXEL24) RGBA(c color.Color, mask RGBmask) {
+func (p *PIXEL24) SetColor(c color.Color, mask RGBmask) {
 	r,g,b,a := c.RGBA()
 	r >>= 8
 	g >>= 8
@@ -117,14 +117,14 @@ func (p *PIXEL24) RGBA(c color.Color, mask RGBmask) {
 type PIXEL16 [2]uint8
 
 func NewRGB16(c color.Color, mask RGBmask) (p PIXEL16) {
-	p.RGBA(c, mask)
+	p.SetColor(c, mask)
 	return
 }
 
 //
 // Set 16bit color Data, ex RGB=565, RGBA=5551
 //
-func (p *PIXEL16) RGBA(c color.Color, mask RGBmask) {
+func (p *PIXEL16) SetColor(c color.Color, mask RGBmask) {
 	r,g,b,a := c.RGBA()
 	r >>= 8
 	g >>= 8
@@ -147,7 +147,7 @@ func (p *PIXEL16) RGBA(c color.Color, mask RGBmask) {
 // 8bit per pixel, ex Gray8 or Color Indexed
 type PIXEL8 [1]uint8
 
-func (p *PIXEL8) RGBA(c color.Color, mask RGBmask) {
+func (p *PIXEL8) SetColor(c color.Color, mask RGBmask) {
 	r,g,b,a := c.RGBA()
 	r >>= 8
 	g >>= 8
@@ -194,7 +194,7 @@ func (p *PIXEL32ARRAY) StoreImage (img image.Image, mask RGBmask) {
 	p.Pix = make([]PIXEL32, w*h)
 	for y:=img.Bounds().Min.Y; y<img.Bounds().Max.Y; y++ {
 		for x:=img.Bounds().Min.X; x<img.Bounds().Max.X; x++ {
-			p.Pix[x+y*w].RGBA(img.At(x,y), mask)
+			p.Pix[x+y*w].SetColor(img.At(x,y), mask)
 		}
 	}
 }
@@ -209,7 +209,7 @@ func (p *PIXEL24ARRAY) StoreImage (img image.Image, mask RGBmask) {
 	p.Pix = make([]PIXEL24, w*h)
 	for y:=img.Bounds().Min.Y; y<img.Bounds().Max.Y; y++ {
 		for x:=img.Bounds().Min.X; x<img.Bounds().Max.X; x++ {
-			p.Pix[x+y*w].RGBA(img.At(x,y), mask)
+			p.Pix[x+y*w].SetColor(img.At(x,y), mask)
 		}
 	}
 }
@@ -223,7 +223,7 @@ func (p *PIXEL16ARRAY) StoreImage (img image.Image, mask RGBmask) {
 	p.Pix = make([]PIXEL16, w*h)
 	for y:=img.Bounds().Min.Y; y<img.Bounds().Max.Y; y++ {
 		for x:=img.Bounds().Min.X; x<img.Bounds().Max.X; x++ {
-			p.Pix[x+y*w].RGBA(img.At(x,y), mask)
+			p.Pix[x+y*w].SetColor(img.At(x,y), mask)
 		}
 	}
 }
@@ -238,7 +238,7 @@ func (p *PIXEL8ARRAY) StoreImage (img image.Image, mask RGBmask) {
 	p.Pix = make([]PIXEL8, w*h)
 	for y:=img.Bounds().Min.Y; y<img.Bounds().Max.Y; y++ {
 		for x:=img.Bounds().Min.X; x<img.Bounds().Max.X; x++ {
-			p.Pix[x+y*w].RGBA(img.At(x,y), mask)
+			p.Pix[x+y*w].SetColor(img.At(x,y), mask)
 		}
 	}
 }
