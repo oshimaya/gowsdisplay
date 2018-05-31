@@ -205,6 +205,34 @@ func (wsd *WsDisplay) GetBufferAsPixel8() (q []PIXEL8) {
 	return
 }
 
+func (wsd *WsDisplay) GetOffset() uint64 {
+	return wsd.info.offset
+}
+
+func (wsd *WsDisplay) GetWidth() uint32 {
+	return wsd.info.width
+}
+
+func (wsd *WsDisplay) GetHeight() uint32 {
+	return wsd.info.height
+}
+
+func (wsd *WsDisplay) GetPixelType() uint32 {
+	return wsd.info.pixeltype
+}
+
+func (wsd *WsDisplay) GetStride() uint32 {
+	return wsd.info.stride
+}
+
+func (wsd *WsDisplay) GetPixelStride() uint32 {
+	return wsd.info.stride/(wsd.info.bitsperpixel/8)
+}
+
+func (wsd *WsDisplay) GetDepth() int {
+	return int(wsd.info.bitsperpixel)
+}
+
 func (wsd *WsDisplay) getFBinfo() error {
 	_, _, errno := syscall.Syscall(syscall.SYS_IOCTL, uintptr(wsd.fd),
 		FBGETFBINFO, uintptr(unsafe.Pointer(&wsd.info)))
