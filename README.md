@@ -21,23 +21,23 @@ Note: Requires RW access permission to /dev/ttyE?
 ```
 Note: This changes ttyE? to framebuffer mode, it's better to operation from network remotely.
 
-### Check info fb's depth, size, type, and so on.
+### Check fb's depth, size, type, and so on.
 
 ```go
 	...
-	info := wsd.GetFBinfo()
-	depth := int(info.Bitsperpixel) / 8
-	view_width := int(info.Width)
-	view_height := int(info.Height)
-	stride := int(info.Stride)
+	depth := wsd.GetDepth()
+	type := wsd.GetPixelType()
+	view_width := wsd.GetWidth()
+	view_height := wsd.GetHeight()
+	stride := wsd.GetStride()
+	pixel_stride := wsd.GetPixelStride()
 	...
 ```
 
-Maybe some accessor function will be added in the future...
-
 ### Data type
 1pixel format:
-
+- PIXEL  
+Interface for PIXEL*
 - PIXEL32  
 1pixel = 32bit, [4]uint8. Typically RGBA8:8:8:8, but the order or bit format is not specified this.
 - PIXEL24  
@@ -47,13 +47,16 @@ Maybe some accessor function will be added in the future...
 - PIXEL8  
 1pixel = 8bit, [1]uint8. Typically Gray or Indexed color.
 
-Apply the mask and order to Color value  
+PixelArray format:
 
-T.B.D.
-
+- PIXELARRAY
+interface for PIXEL*ARRAY, for Image operation
+- PIXEL32ARRAY  
+- PIXEL24ARRAY  
+- PIXEL16ARRAY  
 ### Access to framebuffer memory
 
-Minimum:
+#### Minimum:
 
 ```go
 	pix := ws.GetBufferAsPixel32()	// Get framebuffer data as []PIXEL32 slice
@@ -68,6 +71,17 @@ Minimum:
 	// Write 1 pixel
 	pix[index] = rawdata
 ```
+##### ImageOperation:
+
+```go
+	// Create PixelAarray
+	p, err := wsd.NewPixelArray()
+	// Convert and set image data to PixelArray
+	p.StoreImage(img, wsd.GetRGBmask())
+
+	// Draw image to wsdisplay framebuffer at (x,y)
+	wsd.PutPixelArray(x,y, p)
+```
 
 ### Terminate  
 
@@ -78,7 +92,8 @@ Typically, call this in defer.
 
 ## Examples
 
-  T.B.D.
+- [examples/wspicview]
+
 
 ## License
 
