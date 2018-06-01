@@ -34,7 +34,7 @@ func (wsd *WsDisplay) PutPxielArray(px int, py int, p PIXELARRAY) error {
 	screenH := int(wsd.GetHeight())
 	w := p.GetWidth()
 	h := p.GetHeight()
-	if px+w < 0 || py+h < 0 || px > screenW || py > screenH {
+	if px+w < 0 || py+h < 0 || px >= screenW || py >= screenH {
 		// Nothing to do. All area is out of screen
 		return nil
 	}
