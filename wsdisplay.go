@@ -209,24 +209,24 @@ func (wsd *WsDisplay) GetOffset() uint64 {
 	return wsd.info.offset
 }
 
-func (wsd *WsDisplay) GetWidth() uint32 {
-	return wsd.info.width
+func (wsd *WsDisplay) GetWidth() int {
+	return int(wsd.info.width)
 }
 
-func (wsd *WsDisplay) GetHeight() uint32 {
-	return wsd.info.height
+func (wsd *WsDisplay) GetHeight() int {
+	return int(wsd.info.height)
 }
 
 func (wsd *WsDisplay) GetPixelType() uint32 {
 	return wsd.info.pixeltype
 }
 
-func (wsd *WsDisplay) GetStride() uint32 {
-	return wsd.info.stride
+func (wsd *WsDisplay) GetStride() int {
+	return int(wsd.info.stride)
 }
 
-func (wsd *WsDisplay) GetPixelStride() uint32 {
-	return wsd.info.stride/(wsd.info.bitsperpixel/8)
+func (wsd *WsDisplay) GetPixelStride() int {
+	return int(wsd.info.stride/(wsd.info.bitsperpixel/8))
 }
 
 func (wsd *WsDisplay) GetDepth() int {
