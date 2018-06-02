@@ -38,7 +38,7 @@ Note: This changes ttyE? to framebuffer mode, it's better to operation from netw
 1pixel format:
 - PIXEL  
 Interface for PIXEL*
- - SetColor(color.Color, RGBmask)  
+  - SetColor(color.Color, RGBmask)  
 Set/Convert color data to PIXEL format with specified mask
 - PIXEL32  
 1pixel = 32bit, [4]uint8. Typically RGBA8:8:8:8, but the order or bit format is not specified this.
@@ -53,9 +53,9 @@ PixelArray format:
 
 - PIXELARRAY  
 Interface for PIXEL*ARRAY, for Image operation
- - StoreImage(image.Image, RGBmask)  
+  - StoreImage(image.Image, RGBmask)  
 Set image data from image.Image 
- - GetWidth()  
+  - GetWidth()  
 Get width of the image stored in this PIXELARRAY
  - GetHeight()  
 Get height of the image stored in this PIXELARRAY
