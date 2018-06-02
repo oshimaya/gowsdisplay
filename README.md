@@ -38,6 +38,8 @@ Note: This changes ttyE? to framebuffer mode, it's better to operation from netw
 1pixel format:
 - PIXEL  
 Interface for PIXEL*
+ - SetColor(color.Color, RGBmask)  
+Set/Convert color data to PIXEL format with specified mask
 - PIXEL32  
 1pixel = 32bit, [4]uint8. Typically RGBA8:8:8:8, but the order or bit format is not specified this.
 - PIXEL24  
@@ -49,14 +51,74 @@ Interface for PIXEL*
 
 PixelArray format:
 
-- PIXELARRAY
-interface for PIXEL*ARRAY, for Image operation
+- PIXELARRAY  
+Interface for PIXEL*ARRAY, for Image operation
+ - StoreImage(image.Image, RGBmask)  
+Set image data from image.Image 
+ - GetWidth()  
+Get width of the image stored in this PIXELARRAY
+ - GetHeight()  
+Get height of the image stored in this PIXELARRAY
 - PIXEL32ARRAY  
+Array of PIXEL32
 - PIXEL24ARRAY  
+Array of PIXEL24
 - PIXEL16ARRAY  
+Array of PIXEL16
 ### Access to framebuffer memory
 
-#### Minimum:
+##### Drawing Operaion::
+
+- Prepear PIXEL
+
+```go
+	var c color.Color
+	...
+	pix := wsd.NewPixel( c )
+	...
+```
+
+- SetPixel
+
+```go
+	wsd.SetPixel(x, y, pix)
+```
+- DrawLine
+
+```go
+	var start, end image.Point 
+	...
+	wsd.DrawLine(start, end, pix)
+```
+
+- DrawBox, FillBox
+
+```go
+	var area image.Rectangle 
+	...
+	wsd.DrawBox(area, pix)
+	wsd.FillBox(area, pix)
+```
+
+- DrawCircle, FillCircle
+
+```go
+	wsd.DrawCircle(x, y, r, pix)
+	wsd.FillCircle(x, y, r, pix)
+```
+##### Draw Image 
+
+```go
+	// Create PixelAarray
+	p, err := wsd.NewPixelArray()
+	// Convert and set image data to PixelArray
+	p.StoreImage(img, wsd.GetRGBmask())
+
+	// Draw image to wsdisplay framebuffer at (x,y)
+	wsd.PutPixelArray(x,y, p)
+```
+
+#### Set Raw Data:
 
 ```go
 	pix := ws.GetBufferAsPixel32()	// Get framebuffer data as []PIXEL32 slice
@@ -71,18 +133,6 @@ interface for PIXEL*ARRAY, for Image operation
 	// Write 1 pixel
 	pix[index] = rawdata
 ```
-##### ImageOperation:
-
-```go
-	// Create PixelAarray
-	p, err := wsd.NewPixelArray()
-	// Convert and set image data to PixelArray
-	p.StoreImage(img, wsd.GetRGBmask())
-
-	// Draw image to wsdisplay framebuffer at (x,y)
-	wsd.PutPixelArray(x,y, p)
-```
-
 ### Terminate  
 
 ```go
@@ -92,8 +142,10 @@ Typically, call this in defer.
 
 ## Examples
 
-- [examples/wspicview]
-
+- examples/wsdraw  
+Some drawing operation
+- examples/wspcview  
+View picture from JPEG/PNG file
 
 ## License
 
