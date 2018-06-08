@@ -31,7 +31,7 @@ import (
 	"image/color"
 )
 
-func (wsd *WsDisplay) PutPxielArray(px int, py int, p PIXELARRAY) error {
+func (wsd *WsDisplay) PutPixelArray(px int, py int, p PIXELARRAY) error {
 	screenW := int(wsd.GetWidth())
 	screenH := int(wsd.GetHeight())
 	w := p.GetWidth()
