@@ -163,29 +163,29 @@ type PIXELARRAY interface {
 }
 
 type pixeltype struct {
-	width int
+	width  int
 	height int
-	mask []bool
+	mask   []bool
 }
 
 type PIXEL32ARRAY struct {
 	pixeltype
-	pix    []PIXEL32
+	pix []PIXEL32
 }
 
 type PIXEL24ARRAY struct {
 	pixeltype
-	pix    []PIXEL24
+	pix []PIXEL24
 }
 
 type PIXEL16ARRAY struct {
 	pixeltype
-	pix    []PIXEL16
+	pix []PIXEL16
 }
 
 type PIXEL8ARRAY struct {
 	pixeltype
-	pix    []PIXEL8
+	pix []PIXEL8
 }
 
 func (p *PIXEL32ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
