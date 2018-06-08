@@ -36,35 +36,35 @@ import (
 // Interface depth independent
 
 type PIXEL interface {
-	SetColor(c color.Color, mask RGBmask)
+	SetColor(c color.Color, rgbmask RGBmask)
 }
 
 // 32bit per pixel, ex RGBA(8:8:8:8)
 type PIXEL32 [4]uint8
 
-func NewRGB32(c color.Color, mask RGBmask) (p PIXEL32) {
-	p.SetColor(c, mask)
+func NewRGB32(c color.Color, rgbmask RGBmask) (p PIXEL32) {
+	p.SetColor(c, rgbmask)
 	return
 }
 
 // Set 32bit-color data
-func (p *PIXEL32) SetColor(c color.Color, mask RGBmask) {
+func (p *PIXEL32) SetColor(c color.Color, rgbmask RGBmask) {
 	r, g, b, a := c.RGBA()
 	r >>= 8
 	g >>= 8
 	b >>= 8
 	a >>= 8
-	d := (r<<mask.Red_size-1)/255<<mask.Red_offset |
-		(g<<mask.Green_size-1)/255<<mask.Green_offset |
-		(b<<mask.Blue_size-1)/255<<mask.Blue_offset
+	d := (r<<rgbmask.Red_size-1)/255<<rgbmask.Red_offset |
+		(g<<rgbmask.Green_size-1)/255<<rgbmask.Green_offset |
+		(b<<rgbmask.Blue_size-1)/255<<rgbmask.Blue_offset
 		//
 		// Probably alpha bit is not used by any fb driver now because
 	// alpha_offset and alpha_size is always 0 in wsdisplayio_get_fbinfo()
 	// in sys/dev/wscons/wsdisplay_util.c.
 	// Howerver check it heare for sure.
 	//
-	if mask.Alpha_size > 0 {
-		d |= (a<<mask.Alpha_size - 1) / 255 << mask.Alpha_offset
+	if rgbmask.Alpha_size > 0 {
+		d |= (a<<rgbmask.Alpha_size - 1) / 255 << rgbmask.Alpha_offset
 	}
 	for i := range p {
 		p[i] = (*PIXEL32)(unsafe.Pointer(&d))[i]
@@ -74,33 +74,33 @@ func (p *PIXEL32) SetColor(c color.Color, mask RGBmask) {
 // 24bit per pixel, ex RGB(8:8:8)
 type PIXEL24 [3]uint8
 
-func NewRGB24(c color.Color, mask RGBmask) (p PIXEL24) {
-	p.SetColor(c, mask)
+func NewRGB24(c color.Color, rgbmask RGBmask) (p PIXEL24) {
+	p.SetColor(c, rgbmask)
 	return
 }
 
 //
 // Set 24bit-color data
 //
-func (p *PIXEL24) SetColor(c color.Color, mask RGBmask) {
+func (p *PIXEL24) SetColor(c color.Color, rgbmask RGBmask) {
 	r, g, b, a := c.RGBA()
 	r >>= 8
 	g >>= 8
 	b >>= 8
 	a >>= 8
-	d := (r<<mask.Red_size-1)/255<<mask.Red_offset |
-		(g<<mask.Green_size-1)/255<<mask.Green_offset |
-		(b<<mask.Blue_size-1)/255<<mask.Blue_offset
+	d := (r<<rgbmask.Red_size-1)/255<<rgbmask.Red_offset |
+		(g<<rgbmask.Green_size-1)/255<<rgbmask.Green_offset |
+		(b<<rgbmask.Blue_size-1)/255<<rgbmask.Blue_offset
 	//
-	// all-mask for checking the valid byte
+	// all-rgbmask for checking the valid byte
 	//
-	m := (1<<mask.Red_size-1)<<mask.Red_offset |
-		(1<<mask.Green_size-1)<<mask.Green_offset |
-		(1<<mask.Blue_size-1)<<mask.Blue_offset
+	m := (1<<rgbmask.Red_size-1)<<rgbmask.Red_offset |
+		(1<<rgbmask.Green_size-1)<<rgbmask.Green_offset |
+		(1<<rgbmask.Blue_size-1)<<rgbmask.Blue_offset
 		// maybe alpha bit is nothing but check it for safe
-	if mask.Alpha_size > 0 {
-		d |= (a<<mask.Alpha_size - 1) / 255 << mask.Alpha_offset
-		m |= (1<<mask.Alpha_size - 1) << mask.Alpha_offset
+	if rgbmask.Alpha_size > 0 {
+		d |= (a<<rgbmask.Alpha_size - 1) / 255 << rgbmask.Alpha_offset
+		m |= (1<<rgbmask.Alpha_size - 1) << rgbmask.Alpha_offset
 	}
 	mp := (*PIXEL24)(unsafe.Pointer(&m))
 	// convert to uint8 data in PIXEL
@@ -116,25 +116,25 @@ func (p *PIXEL24) SetColor(c color.Color, mask RGBmask) {
 // 16bit per pixel, ex RGB(5:6:6) or YUV(4:2:2)
 type PIXEL16 [2]uint8
 
-func NewRGB16(c color.Color, mask RGBmask) (p PIXEL16) {
-	p.SetColor(c, mask)
+func NewRGB16(c color.Color, rgbmask RGBmask) (p PIXEL16) {
+	p.SetColor(c, rgbmask)
 	return
 }
 
 //
 // Set 16bit color Data, ex RGB=565, RGBA=5551
 //
-func (p *PIXEL16) SetColor(c color.Color, mask RGBmask) {
+func (p *PIXEL16) SetColor(c color.Color, rgbmask RGBmask) {
 	r, g, b, a := c.RGBA()
 	r >>= 8
 	g >>= 8
 	b >>= 8
 	a >>= 8
-	d := (r<<mask.Red_size-1)/255<<mask.Red_offset |
-		(g<<mask.Green_size-1)/255<<mask.Green_offset |
-		(b<<mask.Blue_size-1)/255<<mask.Blue_offset
-	if mask.Alpha_size > 0 {
-		d |= (a<<mask.Alpha_size - 1) / 255 << mask.Alpha_offset
+	d := (r<<rgbmask.Red_size-1)/255<<rgbmask.Red_offset |
+		(g<<rgbmask.Green_size-1)/255<<rgbmask.Green_offset |
+		(b<<rgbmask.Blue_size-1)/255<<rgbmask.Blue_offset
+	if rgbmask.Alpha_size > 0 {
+		d |= (a<<rgbmask.Alpha_size - 1) / 255 << rgbmask.Alpha_offset
 	}
 	//
 	// convert to int8 data in PIXEL
@@ -157,7 +157,7 @@ func (p *PIXEL8) SetColor(c color.Color, mask RGBmask) {
 }
 
 type PIXELARRAY interface {
-	StoreImage(src image.Image, mask RGBmask)
+	StoreImage(src image.Image, rgbmask RGBmask)
 	GetWidth() int
 	GetHeight() int
 }
@@ -186,7 +186,7 @@ type PIXEL8ARRAY struct {
 	Pix    []PIXEL8
 }
 
-func (p *PIXEL32ARRAY) StoreImage(img image.Image, mask RGBmask) {
+func (p *PIXEL32ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 
 	w := img.Bounds().Max.X - img.Bounds().Min.X
 	h := img.Bounds().Max.Y - img.Bounds().Min.Y
@@ -196,7 +196,7 @@ func (p *PIXEL32ARRAY) StoreImage(img image.Image, mask RGBmask) {
 	p.Pix = make([]PIXEL32, w*h)
 	for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y++ {
 		for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
-			p.Pix[x+y*w].SetColor(img.At(x, y), mask)
+			p.Pix[x+y*w].SetColor(img.At(x, y), rgbmask)
 		}
 	}
 }
@@ -209,7 +209,7 @@ func (p *PIXEL32ARRAY) GetHeight() int {
 	return p.Height
 }
 
-func (p *PIXEL24ARRAY) StoreImage(img image.Image, mask RGBmask) {
+func (p *PIXEL24ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 
 	w := img.Bounds().Max.X - img.Bounds().Min.X
 	h := img.Bounds().Max.Y - img.Bounds().Min.Y
@@ -219,7 +219,7 @@ func (p *PIXEL24ARRAY) StoreImage(img image.Image, mask RGBmask) {
 	p.Pix = make([]PIXEL24, w*h)
 	for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y++ {
 		for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
-			p.Pix[x+y*w].SetColor(img.At(x, y), mask)
+			p.Pix[x+y*w].SetColor(img.At(x, y), rgbmask)
 		}
 	}
 }
@@ -232,7 +232,7 @@ func (p *PIXEL24ARRAY) GetHeight() int {
 	return p.Height
 }
 
-func (p *PIXEL16ARRAY) StoreImage(img image.Image, mask RGBmask) {
+func (p *PIXEL16ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 
 	w := img.Bounds().Max.X - img.Bounds().Min.X
 	h := img.Bounds().Max.Y - img.Bounds().Min.Y
@@ -242,7 +242,7 @@ func (p *PIXEL16ARRAY) StoreImage(img image.Image, mask RGBmask) {
 	p.Pix = make([]PIXEL16, w*h)
 	for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y++ {
 		for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
-			p.Pix[x+y*w].SetColor(img.At(x, y), mask)
+			p.Pix[x+y*w].SetColor(img.At(x, y), rgbmask)
 		}
 	}
 }
@@ -255,7 +255,7 @@ func (p *PIXEL16ARRAY) GetHeight() int {
 	return p.Height
 }
 
-func (p *PIXEL8ARRAY) StoreImage(img image.Image, mask RGBmask) {
+func (p *PIXEL8ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 
 	w := img.Bounds().Max.X - img.Bounds().Min.X
 	h := img.Bounds().Max.Y - img.Bounds().Min.Y
@@ -265,7 +265,7 @@ func (p *PIXEL8ARRAY) StoreImage(img image.Image, mask RGBmask) {
 	p.Pix = make([]PIXEL8, w*h)
 	for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y++ {
 		for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
-			p.Pix[x+y*w].SetColor(img.At(x, y), mask)
+			p.Pix[x+y*w].SetColor(img.At(x, y), rgbmask)
 		}
 	}
 }
