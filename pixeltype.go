@@ -167,6 +167,14 @@ type pixelarray struct {
 	height int
 	mask   []bool
 }
+func (p *pixelarray) GetWidth() int {
+	return p.width
+}
+
+func (p *pixelarray) GetHeight() int {
+	return p.height
+}
+
 
 type PIXEL32ARRAY struct {
 	pixelarray
@@ -211,14 +219,6 @@ func (p *PIXEL32ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 	}
 }
 
-func (p *PIXEL32ARRAY) GetWidth() int {
-	return p.width
-}
-
-func (p *PIXEL32ARRAY) GetHeight() int {
-	return p.height
-}
-
 func (p *PIXEL24ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 
 	w := img.Bounds().Max.X - img.Bounds().Min.X
@@ -239,14 +239,6 @@ func (p *PIXEL24ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 			}
 		}
 	}
-}
-
-func (p *PIXEL24ARRAY) GetWidth() int {
-	return p.width
-}
-
-func (p *PIXEL24ARRAY) GetHeight() int {
-	return p.height
 }
 
 func (p *PIXEL16ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
@@ -271,14 +263,6 @@ func (p *PIXEL16ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 	}
 }
 
-func (p *PIXEL16ARRAY) GetWidth() int {
-	return p.width
-}
-
-func (p *PIXEL16ARRAY) GetHeight() int {
-	return p.height
-}
-
 func (p *PIXEL8ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 
 	w := img.Bounds().Max.X - img.Bounds().Min.X
@@ -299,11 +283,4 @@ func (p *PIXEL8ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 			}
 		}
 	}
-}
-func (p *PIXEL8ARRAY) GetWidth() int {
-	return p.width
-}
-
-func (p *PIXEL8ARRAY) GetHeight() int {
-	return p.height
 }
