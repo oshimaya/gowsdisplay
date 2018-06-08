@@ -162,29 +162,29 @@ type PIXELARRAY interface {
 	GetHeight() int
 }
 
-type pixeltype struct {
+type pixelarray struct {
 	width  int
 	height int
 	mask   []bool
 }
 
 type PIXEL32ARRAY struct {
-	pixeltype
+	pixelarray
 	pix []PIXEL32
 }
 
 type PIXEL24ARRAY struct {
-	pixeltype
+	pixelarray
 	pix []PIXEL24
 }
 
 type PIXEL16ARRAY struct {
-	pixeltype
+	pixelarray
 	pix []PIXEL16
 }
 
 type PIXEL8ARRAY struct {
-	pixeltype
+	pixelarray
 	pix []PIXEL8
 }
 
