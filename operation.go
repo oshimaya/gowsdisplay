@@ -70,7 +70,7 @@ func (wsd *WsDisplay) PutPxielArray(px int, py int, p PIXELARRAY) error {
 		for srcy := starty; srcy < endy; srcy++ {
 			copy(
 				pix[startx+px+(srcy+py)*s:startx+px+(srcy+py)*s+endx],
-				q.Pix[startx+srcy*w:startx+srcy*w+endx])
+				q.pix[startx+srcy*w:startx+srcy*w+endx])
 		}
 	case *PIXEL24ARRAY:
 		if wsd.GetDepth() != 24 {
@@ -82,7 +82,7 @@ func (wsd *WsDisplay) PutPxielArray(px int, py int, p PIXELARRAY) error {
 		for srcy := starty; srcy < endy; srcy++ {
 			copy(
 				pix[startx+px+(srcy+py)*s:startx+px+(srcy+py)*s+endx],
-				q.Pix[startx+srcy*w:startx+srcy*w+endx])
+				q.pix[startx+srcy*w:startx+srcy*w+endx])
 		}
 	case *PIXEL16ARRAY:
 		if wsd.GetDepth() != 16 {
@@ -94,7 +94,7 @@ func (wsd *WsDisplay) PutPxielArray(px int, py int, p PIXELARRAY) error {
 		for srcy := starty; srcy < endy; srcy++ {
 			copy(
 				pix[startx+px+(srcy+py)*s:startx+px+(srcy+py)*s+endx],
-				q.Pix[startx+srcy*w:startx+srcy*w+endx])
+				q.pix[startx+srcy*w:startx+srcy*w+endx])
 		}
 	default:
 		err := errors.New("Unsupported PixelType")

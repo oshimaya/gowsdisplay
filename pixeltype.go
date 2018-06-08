@@ -162,28 +162,30 @@ type PIXELARRAY interface {
 	GetHeight() int
 }
 
+type pixeltype struct {
+	width int
+	height int
+	mask []bool
+}
+
 type PIXEL32ARRAY struct {
-	Width  int
-	Height int
-	Pix    []PIXEL32
+	pixeltype
+	pix    []PIXEL32
 }
 
 type PIXEL24ARRAY struct {
-	Width  int
-	Height int
-	Pix    []PIXEL24
+	pixeltype
+	pix    []PIXEL24
 }
 
 type PIXEL16ARRAY struct {
-	Width  int
-	Height int
-	Pix    []PIXEL16
+	pixeltype
+	pix    []PIXEL16
 }
 
 type PIXEL8ARRAY struct {
-	Width  int
-	Height int
-	Pix    []PIXEL8
+	pixeltype
+	pix    []PIXEL8
 }
 
 func (p *PIXEL32ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
@@ -191,22 +193,30 @@ func (p *PIXEL32ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 	w := img.Bounds().Max.X - img.Bounds().Min.X
 	h := img.Bounds().Max.Y - img.Bounds().Min.Y
 
-	p.Width = w
-	p.Height = h
-	p.Pix = make([]PIXEL32, w*h)
+	p.width = w
+	p.height = h
+	p.pix = make([]PIXEL32, w*h)
+	p.mask = make([]bool, w*h)
 	for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y++ {
 		for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
-			p.Pix[x+y*w].SetColor(img.At(x, y), rgbmask)
+			c := img.At(x, y)
+			p.pix[x+y*w].SetColor(c, rgbmask)
+			_, _, _, a := c.RGBA()
+			if a > 0 {
+				p.mask[x+y*w] = true
+			} else {
+				p.mask[x+y*w] = false
+			}
 		}
 	}
 }
 
 func (p *PIXEL32ARRAY) GetWidth() int {
-	return p.Width
+	return p.width
 }
 
 func (p *PIXEL32ARRAY) GetHeight() int {
-	return p.Height
+	return p.height
 }
 
 func (p *PIXEL24ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
@@ -214,22 +224,29 @@ func (p *PIXEL24ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 	w := img.Bounds().Max.X - img.Bounds().Min.X
 	h := img.Bounds().Max.Y - img.Bounds().Min.Y
 
-	p.Width = w
-	p.Height = h
-	p.Pix = make([]PIXEL24, w*h)
+	p.width = w
+	p.height = h
+	p.pix = make([]PIXEL24, w*h)
 	for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y++ {
 		for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
-			p.Pix[x+y*w].SetColor(img.At(x, y), rgbmask)
+			c := img.At(x, y)
+			p.pix[x+y*w].SetColor(c, rgbmask)
+			_, _, _, a := c.RGBA()
+			if a > 0 {
+				p.mask[x+y*w] = true
+			} else {
+				p.mask[x+y*w] = false
+			}
 		}
 	}
 }
 
 func (p *PIXEL24ARRAY) GetWidth() int {
-	return p.Width
+	return p.width
 }
 
 func (p *PIXEL24ARRAY) GetHeight() int {
-	return p.Height
+	return p.height
 }
 
 func (p *PIXEL16ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
@@ -237,22 +254,29 @@ func (p *PIXEL16ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 	w := img.Bounds().Max.X - img.Bounds().Min.X
 	h := img.Bounds().Max.Y - img.Bounds().Min.Y
 
-	p.Width = w
-	p.Height = h
-	p.Pix = make([]PIXEL16, w*h)
+	p.width = w
+	p.height = h
+	p.pix = make([]PIXEL16, w*h)
 	for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y++ {
 		for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
-			p.Pix[x+y*w].SetColor(img.At(x, y), rgbmask)
+			c := img.At(x, y)
+			p.pix[x+y*w].SetColor(c, rgbmask)
+			_, _, _, a := c.RGBA()
+			if a > 0 {
+				p.mask[x+y*w] = true
+			} else {
+				p.mask[x+y*w] = false
+			}
 		}
 	}
 }
 
 func (p *PIXEL16ARRAY) GetWidth() int {
-	return p.Width
+	return p.width
 }
 
 func (p *PIXEL16ARRAY) GetHeight() int {
-	return p.Height
+	return p.height
 }
 
 func (p *PIXEL8ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
@@ -260,19 +284,26 @@ func (p *PIXEL8ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 	w := img.Bounds().Max.X - img.Bounds().Min.X
 	h := img.Bounds().Max.Y - img.Bounds().Min.Y
 
-	p.Width = w
-	p.Height = h
-	p.Pix = make([]PIXEL8, w*h)
+	p.width = w
+	p.height = h
+	p.pix = make([]PIXEL8, w*h)
 	for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y++ {
 		for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
-			p.Pix[x+y*w].SetColor(img.At(x, y), rgbmask)
+			c := img.At(x, y)
+			p.pix[x+y*w].SetColor(c, rgbmask)
+			_, _, _, a := c.RGBA()
+			if a > 0 {
+				p.mask[x+y*w] = true
+			} else {
+				p.mask[x+y*w] = false
+			}
 		}
 	}
 }
 func (p *PIXEL8ARRAY) GetWidth() int {
-	return p.Width
+	return p.width
 }
 
 func (p *PIXEL8ARRAY) GetHeight() int {
-	return p.Height
+	return p.height
 }
