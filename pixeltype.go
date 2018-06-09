@@ -160,6 +160,7 @@ type PIXELARRAY interface {
 	StoreImage(src image.Image, rgbmask RGBmask)
 	GetWidth() int
 	GetHeight() int
+	PutPixelPat(x int, y int, pix PIXELARRAY)
 }
 
 type pixelarray struct {
@@ -167,6 +168,7 @@ type pixelarray struct {
 	height int
 	mask   []bool
 }
+
 func (p *pixelarray) GetWidth() int {
 	return p.width
 }
@@ -219,6 +221,25 @@ func (p *PIXEL32ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 	}
 }
 
+func (p *PIXEL32ARRAY) PutPixelPat(dest_x int, dest_y int, pix PIXELARRAY) {
+	switch pix.(type) {
+	case *PIXEL32ARRAY:
+		src := pix.(*PIXEL32ARRAY)
+		for y:=0; y< src.height; y++ {
+			for x:=0; x< src.width; x++ {
+				if dest_x < 0 || dest_x >= p.width ||
+				   dest_y < 0 || dest_y >= p.height ||
+				   !src.mask[x+y*src.width] {
+					return
+				}
+				p.pix[dest_x+dest_y*p.width] =
+					src.pix[x+y*src.width]
+				p.mask[dest_x+dest_y*p.width] = true
+			}
+		}
+	}
+}
+
 func (p *PIXEL24ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 
 	w := img.Bounds().Max.X - img.Bounds().Min.X
@@ -236,6 +257,25 @@ func (p *PIXEL24ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 				p.mask[x+y*w] = true
 			} else {
 				p.mask[x+y*w] = false
+			}
+		}
+	}
+}
+
+func (p *PIXEL24ARRAY) PutPixelPat(dest_x int, dest_y int, pix PIXELARRAY) {
+	switch pix.(type) {
+	case *PIXEL24ARRAY:
+		src := pix.(*PIXEL24ARRAY)
+		for y:=0; y< src.height; y++ {
+			for x:=0; x< src.width; x++ {
+				if dest_x < 0 || dest_x >= p.width ||
+				   dest_y < 0 || dest_y >= p.height ||
+				   !src.mask[x+y*src.width] {
+					return
+				}
+				p.pix[dest_x+dest_y*p.width] =
+					src.pix[x+y*src.width]
+				p.mask[dest_x+dest_y*p.width] = true
 			}
 		}
 	}
@@ -263,6 +303,25 @@ func (p *PIXEL16ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 	}
 }
 
+func (p *PIXEL16ARRAY) PutPixelPat(dest_x int, dest_y int, pix PIXELARRAY) {
+	switch pix.(type) {
+	case *PIXEL16ARRAY:
+		src := pix.(*PIXEL16ARRAY)
+		for y:=0; y< src.height; y++ {
+			for x:=0; x< src.width; x++ {
+				if dest_x < 0 || dest_x >= p.width ||
+				   dest_y < 0 || dest_y >= p.height ||
+				   !src.mask[x+y*src.width] {
+					return
+				}
+				p.pix[dest_x+dest_y*p.width] =
+					src.pix[x+y*src.width]
+				p.mask[dest_x+dest_y*p.width] = true
+			}
+		}
+	}
+}
+
 func (p *PIXEL8ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 
 	w := img.Bounds().Max.X - img.Bounds().Min.X
@@ -280,6 +339,25 @@ func (p *PIXEL8ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 				p.mask[x+y*w] = true
 			} else {
 				p.mask[x+y*w] = false
+			}
+		}
+	}
+}
+
+func (p *PIXEL8ARRAY) PutPixelPat(dest_x int, dest_y int, pix PIXELARRAY) {
+	switch pix.(type) {
+	case *PIXEL8ARRAY:
+		src := pix.(*PIXEL8ARRAY)
+		for y:=0; y< src.height; y++ {
+			for x:=0; x< src.width; x++ {
+				if dest_x < 0 || dest_x >= p.width ||
+				   dest_y < 0 || dest_y >= p.height ||
+				   !src.mask[x+y*src.width] {
+					return
+				}
+				p.pix[dest_x+dest_y*p.width] =
+					src.pix[x+y*src.width]
+				p.mask[dest_x+dest_y*p.width] = true
 			}
 		}
 	}
