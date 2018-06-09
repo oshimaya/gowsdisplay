@@ -83,7 +83,7 @@ func main() {
 		// Display Pixel Array to wsdisplay
 
 		wsd.Clear()
-		wsd.PutPxielArray(0, 0, p)
+		wsd.PutPixelArray(0, 0, p)
 
 		time.Sleep(time.Second * 5)
 	}
