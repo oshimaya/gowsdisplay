@@ -177,7 +177,6 @@ func (p *pixelarray) GetHeight() int {
 	return p.height
 }
 
-
 type PIXEL32ARRAY struct {
 	pixelarray
 	pix []PIXEL32
@@ -202,6 +201,8 @@ func (p *PIXEL32ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 
 	w := img.Bounds().Max.X - img.Bounds().Min.X
 	h := img.Bounds().Max.Y - img.Bounds().Min.Y
+	min_x := img.Bounds().Min.X
+	min_y := img.Bounds().Min.Y
 
 	p.width = w
 	p.height = h
@@ -210,12 +211,12 @@ func (p *PIXEL32ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 	for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y++ {
 		for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
 			c := img.At(x, y)
-			p.pix[x+y*w].SetColor(c, rgbmask)
+			p.pix[x-min_x+(y-min_y)*w].SetColor(c, rgbmask)
 			_, _, _, a := c.RGBA()
 			if a > 0 {
-				p.mask[x+y*w] = true
+				p.mask[x-min_x+(y-min_y)*w] = true
 			} else {
-				p.mask[x+y*w] = false
+				p.mask[x-min_x+(y-min_y)*w] = false
 			}
 		}
 	}
@@ -225,11 +226,11 @@ func (p *PIXEL32ARRAY) PutPixelPat(dest_x int, dest_y int, pix PIXELARRAY) {
 	switch pix.(type) {
 	case *PIXEL32ARRAY:
 		src := pix.(*PIXEL32ARRAY)
-		for y:=0; y< src.height; y++ {
-			for x:=0; x< src.width; x++ {
+		for y := 0; y < src.height; y++ {
+			for x := 0; x < src.width; x++ {
 				if dest_x < 0 || dest_x >= p.width ||
-				   dest_y < 0 || dest_y >= p.height ||
-				   !src.mask[x+y*src.width] {
+					dest_y < 0 || dest_y >= p.height ||
+					!src.mask[x+y*src.width] {
 					return
 				}
 				p.pix[dest_x+dest_y*p.width] =
@@ -244,6 +245,8 @@ func (p *PIXEL24ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 
 	w := img.Bounds().Max.X - img.Bounds().Min.X
 	h := img.Bounds().Max.Y - img.Bounds().Min.Y
+	min_x := img.Bounds().Min.X
+	min_y := img.Bounds().Min.Y
 
 	p.width = w
 	p.height = h
@@ -251,12 +254,12 @@ func (p *PIXEL24ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 	for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y++ {
 		for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
 			c := img.At(x, y)
-			p.pix[x+y*w].SetColor(c, rgbmask)
+			p.pix[x-min_x+(y-min_y)*w].SetColor(c, rgbmask)
 			_, _, _, a := c.RGBA()
 			if a > 0 {
-				p.mask[x+y*w] = true
+				p.mask[x-min_x+(y-min_y)*w] = true
 			} else {
-				p.mask[x+y*w] = false
+				p.mask[x-min_x+(y-min_y)*w] = false
 			}
 		}
 	}
@@ -266,11 +269,11 @@ func (p *PIXEL24ARRAY) PutPixelPat(dest_x int, dest_y int, pix PIXELARRAY) {
 	switch pix.(type) {
 	case *PIXEL24ARRAY:
 		src := pix.(*PIXEL24ARRAY)
-		for y:=0; y< src.height; y++ {
-			for x:=0; x< src.width; x++ {
+		for y := 0; y < src.height; y++ {
+			for x := 0; x < src.width; x++ {
 				if dest_x < 0 || dest_x >= p.width ||
-				   dest_y < 0 || dest_y >= p.height ||
-				   !src.mask[x+y*src.width] {
+					dest_y < 0 || dest_y >= p.height ||
+					!src.mask[x+y*src.width] {
 					return
 				}
 				p.pix[dest_x+dest_y*p.width] =
@@ -285,6 +288,8 @@ func (p *PIXEL16ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 
 	w := img.Bounds().Max.X - img.Bounds().Min.X
 	h := img.Bounds().Max.Y - img.Bounds().Min.Y
+	min_x := img.Bounds().Min.X
+	min_y := img.Bounds().Min.Y
 
 	p.width = w
 	p.height = h
@@ -292,12 +297,12 @@ func (p *PIXEL16ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 	for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y++ {
 		for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
 			c := img.At(x, y)
-			p.pix[x+y*w].SetColor(c, rgbmask)
+			p.pix[x-min_x+(y-min_y)*w].SetColor(c, rgbmask)
 			_, _, _, a := c.RGBA()
 			if a > 0 {
-				p.mask[x+y*w] = true
+				p.mask[x-min_x+(y-min_y)*w] = true
 			} else {
-				p.mask[x+y*w] = false
+				p.mask[x-min_x+(y-min_y)*w] = false
 			}
 		}
 	}
@@ -307,11 +312,11 @@ func (p *PIXEL16ARRAY) PutPixelPat(dest_x int, dest_y int, pix PIXELARRAY) {
 	switch pix.(type) {
 	case *PIXEL16ARRAY:
 		src := pix.(*PIXEL16ARRAY)
-		for y:=0; y< src.height; y++ {
-			for x:=0; x< src.width; x++ {
+		for y := 0; y < src.height; y++ {
+			for x := 0; x < src.width; x++ {
 				if dest_x < 0 || dest_x >= p.width ||
-				   dest_y < 0 || dest_y >= p.height ||
-				   !src.mask[x+y*src.width] {
+					dest_y < 0 || dest_y >= p.height ||
+					!src.mask[x+y*src.width] {
 					return
 				}
 				p.pix[dest_x+dest_y*p.width] =
@@ -326,6 +331,8 @@ func (p *PIXEL8ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 
 	w := img.Bounds().Max.X - img.Bounds().Min.X
 	h := img.Bounds().Max.Y - img.Bounds().Min.Y
+	min_x := img.Bounds().Min.X
+	min_y := img.Bounds().Min.Y
 
 	p.width = w
 	p.height = h
@@ -333,12 +340,12 @@ func (p *PIXEL8ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 	for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y++ {
 		for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
 			c := img.At(x, y)
-			p.pix[x+y*w].SetColor(c, rgbmask)
+			p.pix[x-min_x+(y-min_y)*w].SetColor(c, rgbmask)
 			_, _, _, a := c.RGBA()
 			if a > 0 {
-				p.mask[x+y*w] = true
+				p.mask[x-min_x+(y-min_y)*w] = true
 			} else {
-				p.mask[x+y*w] = false
+				p.mask[x-min_x+(y-min_y)*w] = false
 			}
 		}
 	}
@@ -348,11 +355,11 @@ func (p *PIXEL8ARRAY) PutPixelPat(dest_x int, dest_y int, pix PIXELARRAY) {
 	switch pix.(type) {
 	case *PIXEL8ARRAY:
 		src := pix.(*PIXEL8ARRAY)
-		for y:=0; y< src.height; y++ {
-			for x:=0; x< src.width; x++ {
+		for y := 0; y < src.height; y++ {
+			for x := 0; x < src.width; x++ {
 				if dest_x < 0 || dest_x >= p.width ||
-				   dest_y < 0 || dest_y >= p.height ||
-				   !src.mask[x+y*src.width] {
+					dest_y < 0 || dest_y >= p.height ||
+					!src.mask[x+y*src.width] {
 					return
 				}
 				p.pix[dest_x+dest_y*p.width] =
