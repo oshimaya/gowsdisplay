@@ -233,9 +233,9 @@ func (p *PIXEL32ARRAY) PutPixelPat(dest_x int, dest_y int, pix PIXELARRAY) {
 					!src.mask[x+y*src.width] {
 					return
 				}
-				p.pix[dest_x+dest_y*p.width] =
+				p.pix[dest_x+x+(dest_y+y)*p.width] =
 					src.pix[x+y*src.width]
-				p.mask[dest_x+dest_y*p.width] = true
+				p.mask[dest_x+x+(dest_y+y)*p.width] = true
 			}
 		}
 	}
@@ -276,9 +276,9 @@ func (p *PIXEL24ARRAY) PutPixelPat(dest_x int, dest_y int, pix PIXELARRAY) {
 					!src.mask[x+y*src.width] {
 					return
 				}
-				p.pix[dest_x+dest_y*p.width] =
+				p.pix[dest_x+x+(dest_y+y)*p.width] =
 					src.pix[x+y*src.width]
-				p.mask[dest_x+dest_y*p.width] = true
+				p.mask[dest_x+x+(dest_y+y)*p.width] = true
 			}
 		}
 	}
@@ -319,9 +319,9 @@ func (p *PIXEL16ARRAY) PutPixelPat(dest_x int, dest_y int, pix PIXELARRAY) {
 					!src.mask[x+y*src.width] {
 					return
 				}
-				p.pix[dest_x+dest_y*p.width] =
+				p.pix[dest_x+x+(dest_y+y)*p.width] =
 					src.pix[x+y*src.width]
-				p.mask[dest_x+dest_y*p.width] = true
+				p.mask[dest_x+x+(dest_y+y)*p.width] = true
 			}
 		}
 	}
@@ -362,9 +362,9 @@ func (p *PIXEL8ARRAY) PutPixelPat(dest_x int, dest_y int, pix PIXELARRAY) {
 					!src.mask[x+y*src.width] {
 					return
 				}
-				p.pix[dest_x+dest_y*p.width] =
+				p.pix[dest_x+x+(dest_y+y)*p.width] =
 					src.pix[x+y*src.width]
-				p.mask[dest_x+dest_y*p.width] = true
+				p.mask[dest_x+x+(dest_y+y)*p.width] = true
 			}
 		}
 	}
