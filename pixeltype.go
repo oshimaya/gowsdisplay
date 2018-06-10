@@ -54,17 +54,17 @@ func (p *PIXEL32) SetColor(c color.Color, rgbmask RGBmask) {
 	g >>= 8
 	b >>= 8
 	a >>= 8
-	d := (r<<rgbmask.Red_size-1)/255<<rgbmask.Red_offset |
-		(g<<rgbmask.Green_size-1)/255<<rgbmask.Green_offset |
-		(b<<rgbmask.Blue_size-1)/255<<rgbmask.Blue_offset
-		//
-		// Probably alpha bit is not used by any fb driver now because
+	d := (r>>(8-rgbmask.Red_size))<<rgbmask.Red_offset |
+		(g>>(8-rgbmask.Green_size))<<rgbmask.Green_offset |
+		(b>>(8-rgbmask.Blue_size))<<rgbmask.Blue_offset
+
+	// Probably alpha bit is not used by any fb driver now because
 	// alpha_offset and alpha_size is always 0 in wsdisplayio_get_fbinfo()
 	// in sys/dev/wscons/wsdisplay_util.c.
 	// Howerver check it heare for sure.
 	//
 	if rgbmask.Alpha_size > 0 {
-		d |= (a<<rgbmask.Alpha_size - 1) / 255 << rgbmask.Alpha_offset
+		d |= (a>>(8-rgbmask.Alpha_size)) << rgbmask.Alpha_offset
 	}
 	for i := range p {
 		p[i] = (*PIXEL32)(unsafe.Pointer(&d))[i]
@@ -88,19 +88,19 @@ func (p *PIXEL24) SetColor(c color.Color, rgbmask RGBmask) {
 	g >>= 8
 	b >>= 8
 	a >>= 8
-	d := (r<<rgbmask.Red_size-1)/255<<rgbmask.Red_offset |
-		(g<<rgbmask.Green_size-1)/255<<rgbmask.Green_offset |
-		(b<<rgbmask.Blue_size-1)/255<<rgbmask.Blue_offset
+	d := (r>>(8-rgbmask.Red_size))<<rgbmask.Red_offset |
+		(g>>(8-rgbmask.Green_size))<<rgbmask.Green_offset |
+		(b>>(8-rgbmask.Blue_size))<<rgbmask.Blue_offset
 	//
 	// all-rgbmask for checking the valid byte
 	//
-	m := (1<<rgbmask.Red_size-1)<<rgbmask.Red_offset |
-		(1<<rgbmask.Green_size-1)<<rgbmask.Green_offset |
-		(1<<rgbmask.Blue_size-1)<<rgbmask.Blue_offset
+	m := (255>>(8-rgbmask.Red_size))<<rgbmask.Red_offset |
+		(255>>(8-rgbmask.Green_size))<<rgbmask.Green_offset |
+		(255>>(8-rgbmask.Blue_size))<<rgbmask.Blue_offset
 		// maybe alpha bit is nothing but check it for safe
 	if rgbmask.Alpha_size > 0 {
-		d |= (a<<rgbmask.Alpha_size - 1) / 255 << rgbmask.Alpha_offset
-		m |= (1<<rgbmask.Alpha_size - 1) << rgbmask.Alpha_offset
+		d |= (a>>(8-rgbmask.Alpha_size)) << rgbmask.Alpha_offset
+		m |= (255>>(8-rgbmask.Alpha_size)) << rgbmask.Alpha_offset
 	}
 	mp := (*PIXEL24)(unsafe.Pointer(&m))
 	// convert to uint8 data in PIXEL
@@ -130,11 +130,11 @@ func (p *PIXEL16) SetColor(c color.Color, rgbmask RGBmask) {
 	g >>= 8
 	b >>= 8
 	a >>= 8
-	d := (r<<rgbmask.Red_size-1)/255<<rgbmask.Red_offset |
-		(g<<rgbmask.Green_size-1)/255<<rgbmask.Green_offset |
-		(b<<rgbmask.Blue_size-1)/255<<rgbmask.Blue_offset
+	d := (r>>(8-rgbmask.Red_size))<<rgbmask.Red_offset |
+		(g>>(8-rgbmask.Green_size))<<rgbmask.Green_offset |
+		(b>>(8-rgbmask.Blue_size))<<rgbmask.Blue_offset
 	if rgbmask.Alpha_size > 0 {
-		d |= (a<<rgbmask.Alpha_size - 1) / 255 << rgbmask.Alpha_offset
+		d |= (a>>(8-rgbmask.Alpha_size)) << rgbmask.Alpha_offset
 	}
 	//
 	// convert to int8 data in PIXEL
@@ -231,7 +231,7 @@ func (p *PIXEL32ARRAY) PutPixelPat(dest_x int, dest_y int, pix PIXELARRAY) {
 				if dest_x < 0 || dest_x >= p.width ||
 					dest_y < 0 || dest_y >= p.height ||
 					!src.mask[x+y*src.width] {
-					return
+					continue
 				}
 				p.pix[dest_x+x+(dest_y+y)*p.width] =
 					src.pix[x+y*src.width]
@@ -274,7 +274,7 @@ func (p *PIXEL24ARRAY) PutPixelPat(dest_x int, dest_y int, pix PIXELARRAY) {
 				if dest_x < 0 || dest_x >= p.width ||
 					dest_y < 0 || dest_y >= p.height ||
 					!src.mask[x+y*src.width] {
-					return
+					continue
 				}
 				p.pix[dest_x+x+(dest_y+y)*p.width] =
 					src.pix[x+y*src.width]
@@ -317,7 +317,7 @@ func (p *PIXEL16ARRAY) PutPixelPat(dest_x int, dest_y int, pix PIXELARRAY) {
 				if dest_x < 0 || dest_x >= p.width ||
 					dest_y < 0 || dest_y >= p.height ||
 					!src.mask[x+y*src.width] {
-					return
+					continue
 				}
 				p.pix[dest_x+x+(dest_y+y)*p.width] =
 					src.pix[x+y*src.width]
@@ -360,7 +360,7 @@ func (p *PIXEL8ARRAY) PutPixelPat(dest_x int, dest_y int, pix PIXELARRAY) {
 				if dest_x < 0 || dest_x >= p.width ||
 					dest_y < 0 || dest_y >= p.height ||
 					!src.mask[x+y*src.width] {
-					return
+					continue
 				}
 				p.pix[dest_x+x+(dest_y+y)*p.width] =
 					src.pix[x+y*src.width]
