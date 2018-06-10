@@ -228,8 +228,8 @@ func (p *PIXEL32ARRAY) PutPixelPat(dest_x int, dest_y int, pix PIXELARRAY) {
 		src := pix.(*PIXEL32ARRAY)
 		for y := 0; y < src.height; y++ {
 			for x := 0; x < src.width; x++ {
-				if dest_x < 0 || dest_x >= p.width ||
-					dest_y < 0 || dest_y >= p.height ||
+				if dest_x+x < 0 || dest_x+x >= p.width ||
+					dest_y+y < 0 || dest_y+y>= p.height ||
 					!src.mask[x+y*src.width] {
 					continue
 				}
@@ -271,8 +271,8 @@ func (p *PIXEL24ARRAY) PutPixelPat(dest_x int, dest_y int, pix PIXELARRAY) {
 		src := pix.(*PIXEL24ARRAY)
 		for y := 0; y < src.height; y++ {
 			for x := 0; x < src.width; x++ {
-				if dest_x < 0 || dest_x >= p.width ||
-					dest_y < 0 || dest_y >= p.height ||
+				if dest_x+x < 0 || dest_x+x >= p.width ||
+					dest_y+y < 0 || dest_y+y>= p.height ||
 					!src.mask[x+y*src.width] {
 					continue
 				}
@@ -314,8 +314,8 @@ func (p *PIXEL16ARRAY) PutPixelPat(dest_x int, dest_y int, pix PIXELARRAY) {
 		src := pix.(*PIXEL16ARRAY)
 		for y := 0; y < src.height; y++ {
 			for x := 0; x < src.width; x++ {
-				if dest_x < 0 || dest_x >= p.width ||
-					dest_y < 0 || dest_y >= p.height ||
+				if dest_x+x < 0 || dest_x+x >= p.width ||
+					dest_y+y < 0 || dest_y+y>= p.height ||
 					!src.mask[x+y*src.width] {
 					continue
 				}
@@ -357,8 +357,8 @@ func (p *PIXEL8ARRAY) PutPixelPat(dest_x int, dest_y int, pix PIXELARRAY) {
 		src := pix.(*PIXEL8ARRAY)
 		for y := 0; y < src.height; y++ {
 			for x := 0; x < src.width; x++ {
-				if dest_x < 0 || dest_x >= p.width ||
-					dest_y < 0 || dest_y >= p.height ||
+				if dest_x+x < 0 || dest_x+x >= p.width ||
+					dest_y+y < 0 || dest_y+y>= p.height ||
 					!src.mask[x+y*src.width] {
 					continue
 				}
