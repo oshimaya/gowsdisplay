@@ -251,6 +251,7 @@ func (p *PIXEL24ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 	p.width = w
 	p.height = h
 	p.pix = make([]PIXEL24, w*h)
+	p.mask = make([]bool, w*h)
 	for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y++ {
 		for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
 			c := img.At(x, y)
@@ -294,6 +295,7 @@ func (p *PIXEL16ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 	p.width = w
 	p.height = h
 	p.pix = make([]PIXEL16, w*h)
+	p.mask = make([]bool, w*h)
 	for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y++ {
 		for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
 			c := img.At(x, y)
@@ -337,6 +339,7 @@ func (p *PIXEL8ARRAY) StoreImage(img image.Image, rgbmask RGBmask) {
 	p.width = w
 	p.height = h
 	p.pix = make([]PIXEL8, w*h)
+	p.mask = make([]bool, w*h)
 	for y := img.Bounds().Min.Y; y < img.Bounds().Max.Y; y++ {
 		for x := img.Bounds().Min.X; x < img.Bounds().Max.X; x++ {
 			c := img.At(x, y)
