@@ -64,7 +64,7 @@ func (p *PIXEL32) SetColor(c color.Color, rgbmask RGBmask) {
 	// Howerver check it heare for sure.
 	//
 	if rgbmask.Alpha_size > 0 {
-		d |= (a>>(8-rgbmask.Alpha_size)) << rgbmask.Alpha_offset
+		d |= (a >> (8 - rgbmask.Alpha_size)) << rgbmask.Alpha_offset
 	}
 	for i := range p {
 		p[i] = (*PIXEL32)(unsafe.Pointer(&d))[i]
@@ -99,8 +99,8 @@ func (p *PIXEL24) SetColor(c color.Color, rgbmask RGBmask) {
 		(255>>(8-rgbmask.Blue_size))<<rgbmask.Blue_offset
 		// maybe alpha bit is nothing but check it for safe
 	if rgbmask.Alpha_size > 0 {
-		d |= (a>>(8-rgbmask.Alpha_size)) << rgbmask.Alpha_offset
-		m |= (255>>(8-rgbmask.Alpha_size)) << rgbmask.Alpha_offset
+		d |= (a >> (8 - rgbmask.Alpha_size)) << rgbmask.Alpha_offset
+		m |= (255 >> (8 - rgbmask.Alpha_size)) << rgbmask.Alpha_offset
 	}
 	mp := (*PIXEL24)(unsafe.Pointer(&m))
 	// convert to uint8 data in PIXEL
@@ -134,7 +134,7 @@ func (p *PIXEL16) SetColor(c color.Color, rgbmask RGBmask) {
 		(g>>(8-rgbmask.Green_size))<<rgbmask.Green_offset |
 		(b>>(8-rgbmask.Blue_size))<<rgbmask.Blue_offset
 	if rgbmask.Alpha_size > 0 {
-		d |= (a>>(8-rgbmask.Alpha_size)) << rgbmask.Alpha_offset
+		d |= (a >> (8 - rgbmask.Alpha_size)) << rgbmask.Alpha_offset
 	}
 	//
 	// convert to int8 data in PIXEL
@@ -161,6 +161,7 @@ type PIXELARRAY interface {
 	GetWidth() int
 	GetHeight() int
 	PutPixelPat(x int, y int, pix PIXELARRAY)
+	GetMasks() []bool
 }
 
 type pixelarray struct {
@@ -175,6 +176,10 @@ func (p *pixelarray) GetWidth() int {
 
 func (p *pixelarray) GetHeight() int {
 	return p.height
+}
+
+func (p *pixelarray) GetMasks() []bool {
+	return p.mask
 }
 
 type PIXEL32ARRAY struct {
@@ -229,7 +234,7 @@ func (p *PIXEL32ARRAY) PutPixelPat(dest_x int, dest_y int, pix PIXELARRAY) {
 		for y := 0; y < src.height; y++ {
 			for x := 0; x < src.width; x++ {
 				if dest_x+x < 0 || dest_x+x >= p.width ||
-					dest_y+y < 0 || dest_y+y>= p.height ||
+					dest_y+y < 0 || dest_y+y >= p.height ||
 					!src.mask[x+y*src.width] {
 					continue
 				}
@@ -273,7 +278,7 @@ func (p *PIXEL24ARRAY) PutPixelPat(dest_x int, dest_y int, pix PIXELARRAY) {
 		for y := 0; y < src.height; y++ {
 			for x := 0; x < src.width; x++ {
 				if dest_x+x < 0 || dest_x+x >= p.width ||
-					dest_y+y < 0 || dest_y+y>= p.height ||
+					dest_y+y < 0 || dest_y+y >= p.height ||
 					!src.mask[x+y*src.width] {
 					continue
 				}
@@ -317,7 +322,7 @@ func (p *PIXEL16ARRAY) PutPixelPat(dest_x int, dest_y int, pix PIXELARRAY) {
 		for y := 0; y < src.height; y++ {
 			for x := 0; x < src.width; x++ {
 				if dest_x+x < 0 || dest_x+x >= p.width ||
-					dest_y+y < 0 || dest_y+y>= p.height ||
+					dest_y+y < 0 || dest_y+y >= p.height ||
 					!src.mask[x+y*src.width] {
 					continue
 				}
@@ -361,7 +366,7 @@ func (p *PIXEL8ARRAY) PutPixelPat(dest_x int, dest_y int, pix PIXELARRAY) {
 		for y := 0; y < src.height; y++ {
 			for x := 0; x < src.width; x++ {
 				if dest_x+x < 0 || dest_x+x >= p.width ||
-					dest_y+y < 0 || dest_y+y>= p.height ||
+					dest_y+y < 0 || dest_y+y >= p.height ||
 					!src.mask[x+y*src.width] {
 					continue
 				}
